@@ -39,19 +39,48 @@ class TicTacToe {
     }
 
     hasWinningLine():boolean {
+        if(this.checkColumn()){
+            return true;
+        }
+
+        if(this.checkRow()){
+            return true;
+        }
+
+        if(this.checkDiagonal()){
+            return true;
+        }
 
         return false;
     }
 
-    checkColumn(symbol: boardState, index: number): boolean {
-        if(symbol === this.board[index+3] && symbol === this.board[index+6]){
-            return true;
+    checkColumn(): boolean {
+        for(let i=0;i<3;i++){
+            if(this.board[i] === this.board[i+3] && this.board[i] === this.board[i+6] && this.board[i]!==' '){
+                return true;
+            }
         }
         return false;
     }
 
-    checkRow(symbol: boardState, index: number): boolean {
+    checkRow(): boolean {
+       for(let i=0;i<3;i+=3){
+            if(this.board[i]===this.board[i+1] && this.board[i]===this.board[i+2] && this.board[i]!==' '){
+                return true;
+            }
+       }
+        return false;
+    }
 
+    checkDiagonal(): boolean {
+        if(this.board[0]===this.board[4] && this.board[0]===this.board[8] && this.board[0]!==' '){
+            return true;
+        }
+
+        if(this.board[2]===this.board[4] && this.board[0]===this.board[6] && this.board[0]!==' '){
+            return true;
+        }
+        return false;
     }
     
 }
