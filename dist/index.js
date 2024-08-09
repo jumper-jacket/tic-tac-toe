@@ -8,16 +8,6 @@ const promises_1 = __importDefault(require("readline/promises"));
 const rlp = promises_1.default.createInterface({
     input: process.stdin,
 });
-const CLI = {
-    async input() {
-        let input = NaN;
-        while (Number.isNaN(input) || input < 0 || input > 8) {
-            console.log("index : 0~8");
-            input = parseInt(await rlp.question("index 0~8: "));
-        }
-        return input;
-    }
-};
 class TicTacToe {
     board;
     turn = "O";
@@ -74,9 +64,27 @@ class TicTacToe {
         return false;
     }
     async makeMove() {
-        const num = await CLI.input();
-        this.board[num] = this.turn;
+        let input = NaN;
+        while (Number.isNaN(input) || this.isLocationUsed(input)) {
+            input = parseInt(await rlp.question(`${this.turn}の番`));
+            if (input < 0 || input > 8) {
+                console.log("index : 0~8");
+                input = NaN;
+            }
+        }
+        this.board[input] = this.turn;
         this.updateTurn();
+    }
+    isLocationUsed(input) {
+        const AlreadyUsedLocation = this.board.map((symbol, index) => {
+            if (symbol !== " ") {
+                return index;
+            }
+        });
+        if (AlreadyUsedLocation.includes(input)) {
+            console.log("既に入力された場所です");
+        }
+        return AlreadyUsedLocation.includes(input);
     }
     updateTurn() {
         this.turn = this.turn === "O" ? "X" : "O";
