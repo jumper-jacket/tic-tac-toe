@@ -1,14 +1,14 @@
 "use strict";
 const cells = document.querySelectorAll('[data-index]');
+const reset = document.querySelector('#btn');
 class TicTacToe {
-    board;
+    board = new Array(9).fill(" ");
     turn = "O";
     constructor() {
-        this.board = this.boardInit();
         this.turn = "O";
     }
-    boardInit() {
-        return new Array(9).fill(" ");
+    boardReset() {
+        this.board.fill(" ");
     }
     display() {
         for (let i = 0; i < 9; i += 3) {
@@ -96,4 +96,8 @@ cells.forEach(cell => {
             console.log("終了");
         }
     });
+});
+reset.addEventListener('click', () => {
+    tictactoe.boardReset();
+    cells.forEach(cell => cell.textContent = ' ');
 });

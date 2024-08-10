@@ -1,18 +1,18 @@
 const cells: NodeListOf<HTMLDivElement> = document.querySelectorAll('[data-index]');
+const reset = document.querySelector('#btn') as HTMLElement;
 
 type boardState = " " | "O" | "X";
 type TurnState = "O" | "X";
 
 class TicTacToe {
-    board: boardState[];
+    board: boardState[] = new Array(9).fill(" ");
     turn: TurnState = "O";
     constructor(){
-        this.board = this.boardInit();
         this.turn = "O";
     }
 
-    private boardInit(): boardState[]{
-        return new Array(9).fill(" ");
+    boardReset(): void{
+        this.board.fill(" ");
     }
 
     display(){
@@ -119,3 +119,7 @@ cells.forEach(cell =>{
     });
 });
 
+reset.addEventListener('click', ()=> {
+    tictactoe.boardReset();
+    cells.forEach(cell =>  cell.textContent=' ');
+});
