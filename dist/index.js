@@ -1,13 +1,5 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TicTacToe = void 0;
-const promises_1 = __importDefault(require("readline/promises"));
-const rlp = promises_1.default.createInterface({
-    input: process.stdin,
-});
+const cells = document.querySelectorAll('[data-index]');
 class TicTacToe {
     board;
     turn = "O";
@@ -63,56 +55,45 @@ class TicTacToe {
         }
         return false;
     }
-    async makeMove() {
-        let input = NaN;
-        while (Number.isNaN(input) || this.isLocationUsed(input)) {
-            input = parseInt(await rlp.question(`${this.turn}の番`));
-            if (input < 0 || input > 8) {
-                console.log("index : 0~8");
-                input = NaN;
-            }
+    makeMove(index) {
+        if (this.isLocationUsed(index)) {
+            this.board[index] = this.turn;
+            cells[index].textContent = this.turn;
+            this.updateTurn();
         }
-        this.board[input] = this.turn;
-        this.updateTurn();
     }
-    isLocationUsed(input) {
+    isLocationUsed(index) {
         const AlreadyUsedLocation = this.board.map((symbol, index) => {
             if (symbol !== " ") {
                 return index;
             }
         });
-        if (AlreadyUsedLocation.includes(input)) {
+        if (AlreadyUsedLocation.includes(index)) {
             console.log("既に入力された場所です");
+            return false;
         }
-        return AlreadyUsedLocation.includes(input);
+        return !AlreadyUsedLocation.includes(index);
     }
     updateTurn() {
         this.turn = this.turn === "O" ? "X" : "O";
     }
-}
-exports.TicTacToe = TicTacToe;
-class Game {
-    tictactoe;
-    isGameOver;
-    constructor() {
-        this.tictactoe = new TicTacToe();
-        this.isGameOver = false;
+    isGameOver() {
+        return !this.board.includes(' ');
     }
-    async start() {
-        console.log("game start");
-        this.tictactoe.display();
-        console.log("");
-        while (!this.isGameOver) {
-            await this.tictactoe.makeMove();
-            if (this.tictactoe.hasWinningLine()) {
-                this.isGameOver = true;
-                this.tictactoe.display();
-            }
-            console.clear();
-            this.tictactoe.display();
+}
+const tictactoe = new TicTacToe;
+tictactoe.display();
+cells.forEach(cell => {
+    cell.addEventListener('click', () => {
+        const index = cell.getAttribute('data-index');
+        tictactoe.makeMove(index ? parseInt(index) : NaN);
+        tictactoe.display();
+        if (tictactoe.hasWinningLine()) {
+            tictactoe.updateTurn();
+            console.log(`${tictactoe.turn} の勝ち`);
         }
-        rlp.close();
-    }
-}
-const game = new Game;
-game.start();
+        if (tictactoe.isGameOver()) {
+            console.log("終了");
+        }
+    });
+});
